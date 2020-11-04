@@ -67,6 +67,11 @@ self.addEventListener("fetch", (event) => {
 });
 
 // Strategy: cache only
-self.addEventListener("fetch", (event) => {
+/* self.addEventListener("fetch", (event) => {
   event.respondWith(caches.match(event.request));
+}); */
+
+// Network only strategy
+self.addEventListener("fetch", (event) => {
+  event.respondWith(fetch(event.request));
 });
