@@ -96,12 +96,37 @@ self.addEventListener("fetch", (event) => {
 
 // Cache then Network & Dynamic cache
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.open(CACHE_DYNAMIC).then((cache) => {
-      return fetch(event.request).then((response) => {
-        cache.put(event.request, response.clone());
-        return response;
-      });
-    })
-  );
+  const urlFetch = "https://httpbin.org/get";
+
+  if (event.request.url.indexOf(urlFetch) > -1) {
+    event.respondWith(
+      caches.open(CACHE_DYNAMIC).then((cache) => {
+        return fetch(event.request).then((response) => {
+          cache.put(event.request, response.clone());
+          return response;
+        });
+      })
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        if (response) {
+          return response;
+        } else {
+          return fetch(event.request)
+            .then((res) => {
+              return caches.open(CACHE_DYNAMIC).then((cache) => {
+                cache.put(event.request.url, res.clone());
+                return res;
+              });
+            })
+            .catch((error) => {
+              return caches.open(CACHE_STATIC).then((cache) => {
+                return cache.match("/offline.html");
+              });
+            });
+        }
+      })
+    );
+  }
 });
