@@ -72,6 +72,22 @@ self.addEventListener("fetch", (event) => {
 }); */
 
 // Network only strategy
-self.addEventListener("fetch", (event) => {
+/* self.addEventListener("fetch", (event) => {
   event.respondWith(fetch(event.request));
+}); */
+
+// Network with cache fallback strategy
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    fetch(event.request)
+      .then((res) => {
+        return caches.open(CACHE_DYNAMIC).then((cache) => {
+          cache.put(event.request.url, res.clone());
+          return res;
+        });
+      })
+      .catch((error) => {
+        return caches.match(event.request);
+      })
+  );
 });
