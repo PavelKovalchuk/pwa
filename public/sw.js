@@ -1,4 +1,4 @@
-const CACHE_STATIC = "static-v6";
+const CACHE_STATIC = "static-v9";
 const CACHE_DYNAMIC = "dynamic";
 
 self.addEventListener("install", (event) => {
@@ -9,6 +9,7 @@ self.addEventListener("install", (event) => {
       cache.addAll([
         "/",
         "/index.html",
+        "/offline.html",
         "/src/js/app.js",
         "/src/js/feed.js",
         "/src/js/promise.js",
@@ -56,7 +57,11 @@ self.addEventListener("fetch", (event) => {
               return res;
             });
           })
-          .catch((error) => {});
+          .catch((error) => {
+            return caches.open(CACHE_STATIC).then((cache) => {
+              return cache.match("/offline.html");
+            });
+          });
       }
     })
   );
