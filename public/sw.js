@@ -1,31 +1,33 @@
-const DOMAIN = "http://localhost:3001";
 const TRIM_ITEMS_NUMBER = 3;
 const CACHE_STATIC = "static-v15";
 const CACHE_DYNAMIC = "dynamic";
 const STATIC_FILES = [
-  DOMAIN + "/",
-  DOMAIN + "/index.html",
-  DOMAIN + "/offline.html",
-  DOMAIN + "/src/js/app.js",
-  DOMAIN + "/src/js/feed.js",
-  DOMAIN + "/src/js/promise.js",
-  DOMAIN + "/src/js/fetch.js",
-  DOMAIN + "/src/js/material.min.js",
-  DOMAIN + "/src/css/app.css",
-  DOMAIN + "/src/css/feed.css",
-  DOMAIN + "/src/images/main-image.jpg",
+  "/",
+  "/index.html",
+  "/offline.html",
+  "/src/js/app.js",
+  "/src/js/feed.js",
+  "/src/js/promise.js",
+  "/src/js/fetch.js",
+  "/src/js/material.min.js",
+  "/src/css/app.css",
+  "/src/css/feed.css",
+  "/src/images/main-image.jpg",
   "https://fonts.googleapis.com/css?family=Roboto:400,700",
   "https://fonts.googleapis.com/icon?family=Material+Icons",
   "https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css",
 ];
 
 function isInArray(string, array) {
-  for (var i = 0; i < array.length; i++) {
-    if (array[i] === string) {
-      return true;
-    }
+  let cachePath;
+  if (string.indexOf(self.origin) === 0) {
+    // request targets domain where we serve the page from (i.e. NOT a CDN)
+    console.log("matched ", string);
+    cachePath = string.substring(self.origin.length); // take the part of the URL AFTER the domain (e.g. after localhost:8080)
+  } else {
+    cachePath = string; // store the full request (for CDNs)
   }
-  return false;
+  return array.indexOf(cachePath) > -1;
 }
 
 function trimCache(cacheName, maxItems) {
