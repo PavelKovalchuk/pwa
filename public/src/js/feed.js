@@ -43,6 +43,12 @@ function onSaveButtonClicked(event) {
   }
 }
 
+function clearCards() {
+  while (sharedMomentsArea.hasChildNodes()) {
+    sharedMomentsArea.removeChild(sharedMomentsArea.lastChild);
+  }
+}
+
 function createCard() {
   var cardWrapper = document.createElement("div");
   cardWrapper.className = "shared-moment-card mdl-card mdl-shadow--2dp";
@@ -72,10 +78,33 @@ function createCard() {
   sharedMomentsArea.appendChild(cardWrapper);
 }
 
-fetch("https://httpbin.org/get")
+const urlFetch = "https://httpbin.org/get";
+let isNetworkDataReceived = false;
+
+fetch(urlFetch)
   .then(function (res) {
     return res.json();
   })
   .then(function (data) {
+    isNetworkDataReceived = true;
+    console.log("[FEED]: FROM WEB data received: ", data);
     createCard();
   });
+
+// Cache then Network strategy
+if ("caches" in window) {
+  caches
+    .match(urlFetch)
+    .then((response) => {
+      if (response) {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      console.log("[FEED]: FROM CACHE data received: ", data);
+      if (!isNetworkDataReceived) {
+        clearCards();
+        createCard();
+      }
+    });
+}

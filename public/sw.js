@@ -1,4 +1,4 @@
-const CACHE_STATIC = "static-v10";
+const CACHE_STATIC = "static-v13";
 const CACHE_DYNAMIC = "dynamic";
 
 self.addEventListener("install", (event) => {
@@ -77,7 +77,7 @@ self.addEventListener("fetch", (event) => {
 }); */
 
 // Network with cache fallback strategy
-self.addEventListener("fetch", (event) => {
+/* self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((res) => {
@@ -90,4 +90,6 @@ self.addEventListener("fetch", (event) => {
         return caches.match(event.request);
       })
   );
-});
+}); */
+
+
