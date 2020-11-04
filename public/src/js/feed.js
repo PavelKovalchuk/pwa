@@ -5,6 +5,13 @@ var closeCreatePostModalButton = document.querySelector(
 );
 var sharedMomentsArea = document.querySelector("#shared-moments");
 
+function updateUI(data) {
+  clearCards();
+  for (var i = 0; i < data.length; i++) {
+    createCard(data[i]);
+  }
+}
+
 function openCreatePostModal() {
   createPostArea.style.display = "block";
   if (deferredPrompt) {
@@ -58,22 +65,22 @@ function clearCards() {
   }
 }
 
-function createCard() {
+function createCard(data) {
   var cardWrapper = document.createElement("div");
   cardWrapper.className = "shared-moment-card mdl-card mdl-shadow--2dp";
   var cardTitle = document.createElement("div");
   cardTitle.className = "mdl-card__title";
-  cardTitle.style.backgroundImage = 'url("/src/images/sf-boat.jpg")';
+  cardTitle.style.backgroundImage = "url(" + data.image + ")";
   cardTitle.style.backgroundSize = "cover";
   cardTitle.style.height = "180px";
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement("h2");
   cardTitleTextElement.className = "mdl-card__title-text";
-  cardTitleTextElement.textContent = "San Francisco Trip";
+  cardTitleTextElement.textContent = data.title;
   cardTitle.appendChild(cardTitleTextElement);
   var cardSupportingText = document.createElement("div");
   cardSupportingText.className = "mdl-card__supporting-text";
-  cardSupportingText.textContent = "In San Francisco";
+  cardSupportingText.textContent = data.location;
   cardSupportingText.style.textAlign = "center";
 
   // Caching on user demand
@@ -87,7 +94,7 @@ function createCard() {
   sharedMomentsArea.appendChild(cardWrapper);
 }
 
-const urlFetch = "https://httpbin.org/get";
+const urlFetch = "https://pwa-course-a001f.firebaseio.com/posts.json";
 let isNetworkDataReceived = false;
 
 fetch(urlFetch)
@@ -98,7 +105,12 @@ fetch(urlFetch)
     isNetworkDataReceived = true;
     console.log("[FEED]: FROM WEB data received: ", data);
     clearCards();
-    createCard();
+
+    let dataArray = [];
+    for (let key in data) {
+      dataArray.push(data[key]);
+    }
+    updateUI(dataArray);
   });
 
 // Cache then Network strategy
@@ -114,7 +126,12 @@ if ("caches" in window) {
       console.log("[FEED]: FROM CACHE data received: ", data);
       if (!isNetworkDataReceived) {
         clearCards();
-        createCard();
+
+        let dataArray = [];
+        for (let key in data) {
+          dataArray.push(data[key]);
+        }
+        updateUI(dataArray);
       }
     });
 }

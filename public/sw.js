@@ -120,7 +120,7 @@ self.addEventListener("activate", (event) => {
 
 // Cache then Network & Dynamic cache
 self.addEventListener("fetch", (event) => {
-  const urlFetch = "https://httpbin.org/get";
+  const urlFetch = "https://pwa-course-a001f.firebaseio.com/posts.json";
   if (event.request.url.indexOf(urlFetch) > -1) {
     event.respondWith(
       caches.open(CACHE_DYNAMIC).then((cache) => {
