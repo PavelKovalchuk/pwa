@@ -23,12 +23,13 @@ function openCreatePostModal() {
     deferredPrompt = null;
   }
 
+  // Remove and register Service worker
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
+    /*  navigator.serviceWorker.getRegistrations().then((registrations) => {
       for (let i = 0; i < registrations.length; i++) {
         registrations[i].unregister();
       }
-    });
+    }); */
   }
 }
 

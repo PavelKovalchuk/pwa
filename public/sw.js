@@ -29,13 +29,13 @@ function isInArray(string, array) {
 }
 
 function trimCache(cacheName, maxItems) {
-  caches.open(cacheName).then(function (cache) {
+  /* caches.open(cacheName).then(function (cache) {
     return cache.keys().then(function (keys) {
       if (keys.length > maxItems) {
         cache.delete(keys[0]).then(trimCache(cacheName, maxItems));
       }
     });
-  });
+  }); */
 }
 
 self.addEventListener("install", (event) => {
