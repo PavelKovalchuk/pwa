@@ -1,6 +1,6 @@
 const DOMAIN = "http://localhost:3001";
 const TRIM_ITEMS_NUMBER = 3;
-const CACHE_STATIC = "static-v14";
+const CACHE_STATIC = "static-v15";
 const CACHE_DYNAMIC = "dynamic";
 const STATIC_FILES = [
   DOMAIN + "/",
