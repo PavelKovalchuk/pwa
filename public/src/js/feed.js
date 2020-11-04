@@ -88,6 +88,7 @@ fetch(urlFetch)
   .then(function (data) {
     isNetworkDataReceived = true;
     console.log("[FEED]: FROM WEB data received: ", data);
+    clearCards();
     createCard();
   });
 
