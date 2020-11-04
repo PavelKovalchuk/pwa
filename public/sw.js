@@ -1,4 +1,5 @@
 const DOMAIN = "http://localhost:3001";
+const TRIM_ITEMS_NUMBER = 3;
 const CACHE_STATIC = "static-v14";
 const CACHE_DYNAMIC = "dynamic";
 const STATIC_FILES = [
@@ -25,6 +26,16 @@ function isInArray(string, array) {
     }
   }
   return false;
+}
+
+function trimCache(cacheName, maxItems) {
+  caches.open(cacheName).then(function (cache) {
+    return cache.keys().then(function (keys) {
+      if (keys.length > maxItems) {
+        cache.delete(keys[0]).then(trimCache(cacheName, maxItems));
+      }
+    });
+  });
 }
 
 self.addEventListener("install", (event) => {
@@ -112,6 +123,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.open(CACHE_DYNAMIC).then((cache) => {
         return fetch(event.request).then((response) => {
+          trimCache(CACHE_DYNAMIC, TRIM_ITEMS_NUMBER);
           cache.put(event.request, response.clone());
           return response;
         });
@@ -133,6 +145,7 @@ self.addEventListener("fetch", (event) => {
           return fetch(event.request)
             .then((res) => {
               return caches.open(CACHE_DYNAMIC).then((cache) => {
+                trimCache(CACHE_DYNAMIC, TRIM_ITEMS_NUMBER);
                 cache.put(event.request.url, res.clone());
                 return res;
               });
