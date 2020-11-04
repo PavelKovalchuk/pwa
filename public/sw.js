@@ -1,5 +1,7 @@
+importScripts("/src/js/idb.js");
+
 const TRIM_ITEMS_NUMBER = 3;
-const CACHE_STATIC = "static-v15";
+const CACHE_STATIC = "static-v16";
 const CACHE_DYNAMIC = "dynamic";
 const STATIC_FILES = [
   "/",
@@ -7,6 +9,7 @@ const STATIC_FILES = [
   "/offline.html",
   "/src/js/app.js",
   "/src/js/feed.js",
+  "/src/js/idb.js",
   "/src/js/promise.js",
   "/src/js/fetch.js",
   "/src/js/material.min.js",
