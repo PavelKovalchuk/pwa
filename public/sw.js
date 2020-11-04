@@ -1,4 +1,4 @@
-const CACHE_STATIC = "static-v9";
+const CACHE_STATIC = "static-v10";
 const CACHE_DYNAMIC = "dynamic";
 
 self.addEventListener("install", (event) => {
@@ -44,8 +44,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   // to override the data
   // event.respondWith(fetch(event.request));
-
-  event.respondWith(
+  /* event.respondWith(
     caches.match(event.request).then((response) => {
       if (response) {
         return response;
@@ -64,5 +63,10 @@ self.addEventListener("fetch", (event) => {
           });
       }
     })
-  );
+  ); */
+});
+
+// Strategy: cache only
+self.addEventListener("fetch", (event) => {
+  event.respondWith(caches.match(event.request));
 });
