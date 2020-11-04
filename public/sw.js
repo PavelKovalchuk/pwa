@@ -1,4 +1,4 @@
-const CACHE_STATIC = "static-v13";
+const CACHE_STATIC = "static-v14";
 const CACHE_DYNAMIC = "dynamic";
 
 self.addEventListener("install", (event) => {
@@ -41,6 +41,8 @@ self.addEventListener("activate", (event) => {
   );
   return self.clients.claim();
 });
+
+// Cache then Network strategy
 self.addEventListener("fetch", (event) => {
   // to override the data
   // event.respondWith(fetch(event.request));
@@ -92,4 +94,14 @@ self.addEventListener("fetch", (event) => {
   );
 }); */
 
-
+// Cache then Network & Dynamic cache
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.open(CACHE_DYNAMIC).then((cache) => {
+      return fetch(event.request).then((response) => {
+        cache.put(event.request, response.clone());
+        return response;
+      });
+    })
+  );
+});
