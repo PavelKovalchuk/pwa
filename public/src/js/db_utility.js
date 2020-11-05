@@ -31,3 +31,16 @@ function clearAllData(storeName) {
     return transaction.complete;
   });
 }
+
+function deleteItemFromData(storeName, id) {
+  dbPromise
+    .then((db) => {
+      const transaction = db.transaction(storeName, "readwrite");
+      const store = transaction.objectStore(storeName);
+      store.delete(id);
+      return transaction.complete;
+    })
+    .then(() => {
+      console.log("Item deleted id", id);
+    });
+}

@@ -116,7 +116,6 @@ fetch(urlFetch)
 
 // Save data in indexedDB
 if ("indexedDB" in window) {
-  console.log("DBU_STORE_NAME_POSTS ", DBU_STORE_NAME_POSTS);
   readAllData(DBU_STORE_NAME_POSTS).then((data) => {
     if (!isNetworkDataReceived) {
       console.log("[FEED]: FROM INDEXED_DB data received: ", data);

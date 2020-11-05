@@ -83,6 +83,11 @@ self.addEventListener("fetch", (event) => {
           .then((data) => {
             for (let key in data) {
               writeData(DBU_STORE_NAME_POSTS, data[key]);
+
+              // For demonstration remove single item
+              /* .then(() => {
+                deleteItemFromData(DBU_STORE_NAME_POSTS, data[key].id);
+              }); */
             }
           });
 
