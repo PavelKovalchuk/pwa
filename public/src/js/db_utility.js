@@ -1,8 +1,12 @@
 const DBU_STORE_NAME_POSTS = "posts";
+const DBU_STORE_NAME_SYNC_POSTS = "sync-posts";
 
 const dbPromise = idb.open("posts-store", 1, (db) => {
   if (!db.objectStoreNames.contains(DBU_STORE_NAME_POSTS)) {
     db.createObjectStore(DBU_STORE_NAME_POSTS, { keyPath: "id" });
+  }
+  if (!db.objectStoreNames.contains(DBU_STORE_NAME_SYNC_POSTS)) {
+    db.createObjectStore(DBU_STORE_NAME_SYNC_POSTS, { keyPath: "id" });
   }
 });
 

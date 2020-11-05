@@ -4,6 +4,7 @@ importScripts("/src/js/db_utility.js");
 const TRIM_ITEMS_NUMBER = 3;
 const CACHE_STATIC = "static-v18";
 const CACHE_DYNAMIC = "dynamic";
+const SYNC_EVENT_NEW_POST = "sync-new-post";
 const STATIC_FILES = [
   "/",
   "/index.html",
@@ -117,6 +118,44 @@ self.addEventListener("fetch", (event) => {
                   return cache.match("/offline.html");
                 }
               });
+            });
+        }
+      })
+    );
+  }
+});
+
+self.addEventListener("sync", function (event) {
+  console.log("[Service Worker] Background syncing", event);
+  if (event.tag === SYNC_EVENT_NEW_POST) {
+    console.log("[Service Worker] Syncing new Posts");
+    event.waitUntil(
+      readAllData(DBU_STORE_NAME_SYNC_POSTS).then((data) => {
+        for (let datum of data) {
+          fetch("https://pwa-course-a001f.firebaseio.com/posts.json", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({
+              id: datum.id,
+              title: datum.title,
+              location: datum.location,
+              image:
+                "https://firebasestorage.googleapis.com/v0/b/pwa-course-a001f.appspot.com/o/kharkiv.jpg?alt=media&token=80ff87f9-b921-4046-b943-64ca925367c9",
+            }),
+          })
+            .then((res) => {
+              console.log("Sent data", res);
+              if (res.ok) {
+                res.json().then((resData) => {
+                  deleteItemFromData(DBU_STORE_NAME_SYNC_POSTS, resData.id);
+                });
+              }
+            })
+            .catch((err) => {
+              console.log("Error while sending data", err);
             });
         }
       })

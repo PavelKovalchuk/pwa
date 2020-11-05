@@ -1,9 +1,13 @@
-var shareImageButton = document.querySelector("#share-image-button");
-var createPostArea = document.querySelector("#create-post");
-var closeCreatePostModalButton = document.querySelector(
+const shareImageButton = document.querySelector("#share-image-button");
+const createPostArea = document.querySelector("#create-post");
+const closeCreatePostModalButton = document.querySelector(
   "#close-create-post-modal-btn"
 );
-var sharedMomentsArea = document.querySelector("#shared-moments");
+const sharedMomentsArea = document.querySelector("#shared-moments");
+const form = document.querySelector("form");
+const titleInput = document.querySelector("#title");
+const locationInput = document.querySelector("#location");
+const SYNC_EVENT_NEW_POST = "sync-new-post";
 
 function updateUI(data) {
   clearCards();
@@ -147,3 +151,60 @@ if ("indexedDB" in window) {
       }
     });
 } */
+
+function sendData() {
+  fetch("https://pwa-course-a001f.firebaseio.com/posts.json", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      id: new Date().toISOString(),
+      title: titleInput.value,
+      location: locationInput.value,
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/pwa-course-a001f.appspot.com/o/kharkiv.jpg?alt=media&token=80ff87f9-b921-4046-b943-64ca925367c9",
+    }),
+  }).then(function (res) {
+    console.log("Sent data", res);
+    updateUI();
+  });
+}
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  if (titleInput.value.trim() === "" || locationInput.value.trim() === "") {
+    alert("Please enter valid data!");
+    return;
+  }
+
+  closeCreatePostModal();
+
+  if ("serviceWorker" in navigator && "SyncManager" in window) {
+    navigator.serviceWorker.ready.then((serviceWorker) => {
+      const post = {
+        id: new Date().toISOString(),
+        title: titleInput.value,
+        location: locationInput.value,
+      };
+      writeData(DBU_STORE_NAME_SYNC_POSTS, post)
+        .then(() => {
+          return serviceWorker.sync.register(SYNC_EVENT_NEW_POST);
+        })
+        .then(() => {
+          const snackbarContainer = document.querySelector(
+            "#confirmation-toast"
+          );
+          const data = { message: "Your Post was saved for syncing!" };
+          snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  } else {
+    sendData();
+  }
+});
