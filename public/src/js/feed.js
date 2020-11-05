@@ -153,20 +153,23 @@ if ("indexedDB" in window) {
 } */
 
 function sendData() {
-  fetch("https://pwa-course-a001f.firebaseio.com/posts.json", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify({
-      id: new Date().toISOString(),
-      title: titleInput.value,
-      location: locationInput.value,
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/pwa-course-a001f.appspot.com/o/kharkiv.jpg?alt=media&token=80ff87f9-b921-4046-b943-64ca925367c9",
-    }),
-  }).then(function (res) {
+  fetch(
+    "https://us-central1-pwa-course-a001f.cloudfunctions.net/storePostData",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        id: new Date().toISOString(),
+        title: titleInput.value,
+        location: locationInput.value,
+        image:
+          "https://firebasestorage.googleapis.com/v0/b/pwa-course-a001f.appspot.com/o/kharkiv.jpg?alt=media&token=80ff87f9-b921-4046-b943-64ca925367c9",
+      }),
+    }
+  ).then(function (res) {
     console.log("Sent data", res);
     updateUI();
   });

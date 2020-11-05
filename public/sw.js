@@ -132,20 +132,23 @@ self.addEventListener("sync", function (event) {
     event.waitUntil(
       readAllData(DBU_STORE_NAME_SYNC_POSTS).then((data) => {
         for (let datum of data) {
-          fetch("https://pwa-course-a001f.firebaseio.com/posts.json", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify({
-              id: datum.id,
-              title: datum.title,
-              location: datum.location,
-              image:
-                "https://firebasestorage.googleapis.com/v0/b/pwa-course-a001f.appspot.com/o/kharkiv.jpg?alt=media&token=80ff87f9-b921-4046-b943-64ca925367c9",
-            }),
-          })
+          fetch(
+            "https://us-central1-pwa-course-a001f.cloudfunctions.net/storePostData",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+              body: JSON.stringify({
+                id: datum.id,
+                title: datum.title,
+                location: datum.location,
+                image:
+                  "https://firebasestorage.googleapis.com/v0/b/pwa-course-a001f.appspot.com/o/kharkiv.jpg?alt=media&token=80ff87f9-b921-4046-b943-64ca925367c9",
+              }),
+            }
+          )
             .then((res) => {
               console.log("Sent data", res);
               if (res.ok) {
