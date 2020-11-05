@@ -11,7 +11,7 @@ function writeData(storeName, data) {
     const transaction = db.transaction(storeName, "readwrite");
     const store = transaction.objectStore(storeName);
     store.put(data);
-    transaction.complete;
+    return transaction.complete;
   });
 }
 
@@ -19,6 +19,15 @@ function readAllData(storeName) {
   return dbPromise.then((db) => {
     const transaction = db.transaction(storeName, "readonly");
     const store = transaction.objectStore(storeName);
-    return store.getAll()
+    return store.getAll();
+  });
+}
+
+function clearAllData(storeName) {
+  return dbPromise.then((db) => {
+    const transaction = db.transaction(storeName, "readwrite");
+    const store = transaction.objectStore(storeName);
+    store.clear();
+    return transaction.complete;
   });
 }

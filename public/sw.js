@@ -2,7 +2,7 @@ importScripts("/src/js/idb.js");
 importScripts("/src/js/db_utility.js");
 
 const TRIM_ITEMS_NUMBER = 3;
-const CACHE_STATIC = "static-v17";
+const CACHE_STATIC = "static-v18";
 const CACHE_DYNAMIC = "dynamic";
 const STATIC_FILES = [
   "/",
@@ -76,11 +76,16 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(event.request).then((response) => {
         const clonedResponse = response.clone();
-        clonedResponse.json().then((data) => {
-          for (let key in data) {
-            writeData(DBU_STORE_NAME_POSTS, data[key]);
-          }
-        });
+        clearAllData(DBU_STORE_NAME_POSTS)
+          .then(() => {
+            return clonedResponse.json();
+          })
+          .then((data) => {
+            for (let key in data) {
+              writeData(DBU_STORE_NAME_POSTS, data[key]);
+            }
+          });
+
         return response;
       })
     );
