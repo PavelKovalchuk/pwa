@@ -1,4 +1,5 @@
 importScripts("/src/js/idb.js");
+importScripts("/src/js/db_utility.js");
 
 const TRIM_ITEMS_NUMBER = 3;
 const CACHE_STATIC = "static-v16";
@@ -20,14 +21,6 @@ const STATIC_FILES = [
   "https://fonts.googleapis.com/icon?family=Material+Icons",
   "https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.indigo-pink.min.css",
 ];
-
-const STORE_NAME = "posts";
-
-const dbPromise = idb.open("posts-store", 1, (db) => {
-  if (!db.objectStoreNames.contains(STORE_NAME)) {
-    db.createObjectStore(STORE_NAME, { keyPath: "id" });
-  }
-});
 
 function isInArray(string, array) {
   let cachePath;
@@ -75,6 +68,55 @@ self.addEventListener("activate", (event) => {
     })
   );
   return self.clients.claim();
+});
+
+// Cache then Network & Dynamic cache
+self.addEventListener("fetch", (event) => {
+  const urlFetch = "https://pwa-course-a001f.firebaseio.com/posts.json";
+  if (event.request.url.indexOf(urlFetch) > -1) {
+    event.respondWith(
+      fetch(event.request).then((response) => {
+        const clonedResponse = response.clone();
+        clonedResponse.json().then((data) => {
+          for (let key in data) {
+            writeData(DBU_STORE_NAME_POSTS, data[key]);
+          }
+        });
+        return response;
+      })
+    );
+  } else if (isInArray(event.request.url, STATIC_FILES)) {
+    // Cache only for static files
+    console.log(
+      "[Service Worker] static file in cache only: ",
+      event.request.url
+    );
+    event.respondWith(caches.match(event.request));
+  } else {
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        if (response) {
+          return response;
+        } else {
+          return fetch(event.request)
+            .then((res) => {
+              return caches.open(CACHE_DYNAMIC).then((cache) => {
+                trimCache(CACHE_DYNAMIC, TRIM_ITEMS_NUMBER);
+                cache.put(event.request.url, res.clone());
+                return res;
+              });
+            })
+            .catch((error) => {
+              return caches.open(CACHE_STATIC).then((cache) => {
+                if (event.request.headers.get("accept").includes("text/html")) {
+                  return cache.match("/offline.html");
+                }
+              });
+            });
+        }
+      })
+    );
+  }
 });
 
 // Cache then Network strategy
@@ -128,57 +170,3 @@ self.addEventListener("activate", (event) => {
       })
   );
 }); */
-
-// Cache then Network & Dynamic cache
-self.addEventListener("fetch", (event) => {
-  const urlFetch = "https://pwa-course-a001f.firebaseio.com/posts.json";
-  if (event.request.url.indexOf(urlFetch) > -1) {
-    event.respondWith(
-      fetch(event.request).then((response) => {
-        const clonedResponse = response.clone();
-        clonedResponse.json().then((data) => {
-          for (let key in data) {
-            dbPromise.then((db) => {
-              const transaction = db.transaction(STORE_NAME, "readwrite");
-              const store = transaction.objectStore(STORE_NAME);
-              store.put(data[key]);
-              transaction.complete;
-            });
-          }
-        });
-        return response;
-      })
-    );
-  } else if (isInArray(event.request.url, STATIC_FILES)) {
-    // Cache only for static files
-    console.log(
-      "[Service Worker] static file in cache only: ",
-      event.request.url
-    );
-    event.respondWith(caches.match(event.request));
-  } else {
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        if (response) {
-          return response;
-        } else {
-          return fetch(event.request)
-            .then((res) => {
-              return caches.open(CACHE_DYNAMIC).then((cache) => {
-                trimCache(CACHE_DYNAMIC, TRIM_ITEMS_NUMBER);
-                cache.put(event.request.url, res.clone());
-                return res;
-              });
-            })
-            .catch((error) => {
-              return caches.open(CACHE_STATIC).then((cache) => {
-                if (event.request.headers.get("accept").includes("text/html")) {
-                  return cache.match("/offline.html");
-                }
-              });
-            });
-        }
-      })
-    );
-  }
-});
