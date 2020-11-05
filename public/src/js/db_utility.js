@@ -14,3 +14,11 @@ function writeData(storeName, data) {
     transaction.complete;
   });
 }
+
+function readAllData(storeName) {
+  return dbPromise.then((db) => {
+    const transaction = db.transaction(storeName, "readonly");
+    const store = transaction.objectStore(storeName);
+    return store.getAll()
+  });
+}

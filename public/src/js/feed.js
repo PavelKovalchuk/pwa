@@ -113,8 +113,19 @@ fetch(urlFetch)
     updateUI(dataArray);
   });
 
+// Save data in indexedDB
+if ("indexedDB" in window) {
+  console.log("DBU_STORE_NAME_POSTS ", DBU_STORE_NAME_POSTS);
+  readAllData(DBU_STORE_NAME_POSTS).then((data) => {
+    if (!isNetworkDataReceived) {
+      console.log("[FEED]: FROM INDEXED_DB data received: ", data);
+      updateUI(data);
+    }
+  });
+}
+
 // Cache then Network strategy
-if ("caches" in window) {
+/* if ("caches" in window) {
   caches
     .match(urlFetch)
     .then((response) => {
@@ -134,4 +145,4 @@ if ("caches" in window) {
         updateUI(dataArray);
       }
     });
-}
+} */

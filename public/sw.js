@@ -2,7 +2,7 @@ importScripts("/src/js/idb.js");
 importScripts("/src/js/db_utility.js");
 
 const TRIM_ITEMS_NUMBER = 3;
-const CACHE_STATIC = "static-v16";
+const CACHE_STATIC = "static-v17";
 const CACHE_DYNAMIC = "dynamic";
 const STATIC_FILES = [
   "/",
@@ -26,7 +26,6 @@ function isInArray(string, array) {
   let cachePath;
   if (string.indexOf(self.origin) === 0) {
     // request targets domain where we serve the page from (i.e. NOT a CDN)
-    console.log("matched ", string);
     cachePath = string.substring(self.origin.length); // take the part of the URL AFTER the domain (e.g. after localhost:8080)
   } else {
     cachePath = string; // store the full request (for CDNs)
@@ -87,10 +86,6 @@ self.addEventListener("fetch", (event) => {
     );
   } else if (isInArray(event.request.url, STATIC_FILES)) {
     // Cache only for static files
-    console.log(
-      "[Service Worker] static file in cache only: ",
-      event.request.url
-    );
     event.respondWith(caches.match(event.request));
   } else {
     event.respondWith(
