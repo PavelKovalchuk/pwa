@@ -13,3 +13,7 @@ Finally, run `npm start` to start the development server and visit [localhost:80
 # How to Use In Android Studio
 
 http://10.0.2.2:3001/
+
+# How to Use Firebase CLI
+
+in the terminal: firebase init
