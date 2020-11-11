@@ -178,7 +178,21 @@ self.addEventListener("notificationclick", (event) => {
     notification.close();
   } else {
     console.log(action);
-    notification.close();
+    event.waitUntil(
+      clients.matchAll().then((allClients) => {
+        const client = allClients.find((item) => {
+          return item.visibilityState === "visible";
+        });
+
+        if (client !== undefined) {
+          client.navigate(notification.data.url);
+          client.focus();
+        } else {
+          clients.openWindow(notification.data.url);
+        }
+        notification.close();
+      })
+    );
   }
 });
 
@@ -189,7 +203,11 @@ self.addEventListener("notificationclose", (event) => {
 self.addEventListener("push", (event) => {
   console.log("Push Notification received", event);
 
-  let data = { title: "New!", content: "Something new happened!" };
+  let data = {
+    title: "New!",
+    content: "Something new happened!",
+    openUrl: "/",
+  };
 
   if (event.data) {
     data = JSON.parse(event.data.text());
@@ -199,6 +217,9 @@ self.addEventListener("push", (event) => {
     body: data.content,
     icon: "/src/images/icons/app-icon-96x96.png",
     badge: "/src/images/icons/app-icon-96x96.png",
+    data: {
+      url: data.openUrl,
+    },
   };
 
   event.waitUntil(self.registration.showNotification(data.title, options));
