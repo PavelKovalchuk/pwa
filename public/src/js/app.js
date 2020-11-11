@@ -21,16 +21,48 @@ window.addEventListener("beforeinstallprompt", (event) => {
 });
 
 function displayConfirmNotification() {
-  console.log("--- displayConfirmNotification");
-  const options = {
+  if ("serviceWorker" in navigator) {
+    const options = {
+      body: "You successfully subscribed to our Notification service!",
+      icon: "/src/images/icons/app-icon-96x96.png",
+      image: "/src/images/sf-boat.jpg",
+      dir: "ltr",
+      lang: "en-US", // BCP 47,
+      vibrate: [100, 50, 200],
+      badge: "/src/images/icons/app-icon-96x96.png",
+      tag: "confirm-notification",
+      renotify: true,
+      actions: [
+        {
+          action: "confirm",
+          title: "Okay",
+          icon: "/src/images/icons/app-icon-96x96.png",
+        },
+        {
+          action: "cancel",
+          title: "Cancel",
+          icon: "/src/images/icons/app-icon-96x96.png",
+        },
+      ],
+    };
+
+    navigator.serviceWorker.ready.then((registration) => {
+      registration.showNotification(
+        "Successfully subscribed (from SW)!",
+        options
+      );
+    });
+  }
+
+  // Browser notification
+  /* const options = {
     body: "You successfully subscribed to our Notification service!",
   };
-  new Notification("Successfully subscribed!", options);
+  new Notification("Successfully subscribed!", options); */
 }
 
 function askForNotificationPermission() {
   Notification.requestPermission((result) => {
-    console.log("User Choice", result);
     if (result !== "granted") {
       console.log("No notification permission granted!");
     } else {

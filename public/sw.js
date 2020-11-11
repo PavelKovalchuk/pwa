@@ -166,6 +166,26 @@ self.addEventListener("sync", function (event) {
   }
 });
 
+self.addEventListener("notificationclick", (event) => {
+  const notification = event.notification;
+  const action = event.action;
+
+  console.log(notification);
+
+  // action is set in displayConfirmNotification function (options)
+  if (action === "confirm") {
+    console.log("Confirm was chosen");
+    notification.close();
+  } else {
+    console.log(action);
+    notification.close();
+  }
+});
+
+self.addEventListener("notificationclose", (event) => {
+  console.log("Notification was closed", event);
+});
+
 // Cache then Network strategy
 // self.addEventListener("fetch", (event) => {
 // to override the data
