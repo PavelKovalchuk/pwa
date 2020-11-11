@@ -186,6 +186,24 @@ self.addEventListener("notificationclose", (event) => {
   console.log("Notification was closed", event);
 });
 
+self.addEventListener("push", (event) => {
+  console.log("Push Notification received", event);
+
+  let data = { title: "New!", content: "Something new happened!" };
+
+  if (event.data) {
+    data = JSON.parse(event.data.text());
+  }
+
+  const options = {
+    body: data.content,
+    icon: "/src/images/icons/app-icon-96x96.png",
+    badge: "/src/images/icons/app-icon-96x96.png",
+  };
+
+  event.waitUntil(self.registration.showNotification(data.title, options));
+});
+
 // Cache then Network strategy
 // self.addEventListener("fetch", (event) => {
 // to override the data

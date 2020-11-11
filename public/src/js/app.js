@@ -61,17 +61,67 @@ function displayConfirmNotification() {
   new Notification("Successfully subscribed!", options); */
 }
 
+function configurePushSubscription() {
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+
+  let reg;
+  navigator.serviceWorker.ready
+    .then((registration) => {
+      reg = registration;
+      return registration.pushManager.getSubscription();
+    })
+    .then((sub) => {
+      if (sub === null) {
+        // Create a new subscription
+        // https://blog.mozilla.org/services/2016/04/04/using-vapid-with-webpush/
+        const vapidPublicKey =
+          "BNXAhiiGDSWg29o4i7EffNhatd4vR1QBf7jX13lVRcr_4R4M9uMs0nbK2D36JJwRVRlXYaE0DwSHlorNi1OQzi8";
+        const convertedVapidPublicKey = urlBase64ToUint8Array(vapidPublicKey);
+        return reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: convertedVapidPublicKey,
+        });
+      } else {
+        // We have a subscription
+      }
+    })
+    .then((newSub) => {
+      return fetch(
+        "https://pwa-course-a001f.firebaseio.com/subscriptions.json",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(newSub),
+        }
+      );
+    })
+    .then((res) => {
+      if (res.ok) {
+        displayConfirmNotification();
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 function askForNotificationPermission() {
   Notification.requestPermission((result) => {
     if (result !== "granted") {
       console.log("No notification permission granted!");
     } else {
-      displayConfirmNotification();
+      // displayConfirmNotification();
+      configurePushSubscription();
     }
   });
 }
 
-if ("Notification" in window) {
+if ("Notification" in window && "serviceWorker" in navigator) {
   for (let i = 0; i < enableNotificationsButtons.length; i++) {
     enableNotificationsButtons[i].style.display = "inline-block";
     enableNotificationsButtons[i].addEventListener(
