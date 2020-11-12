@@ -69,6 +69,10 @@ captureButton.addEventListener("click", (event) => {
   picture = dataURItoBlob(canvasElement.toDataURL());
 });
 
+imagePicker.addEventListener("change", function (event) {
+  picture = event.target.files[0];
+});
+
 function updateUI(data) {
   clearCards();
   for (var i = 0; i < data.length; i++) {
