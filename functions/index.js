@@ -87,6 +87,10 @@ exports.storePostData = functions.https.onRequest(function (request, response) {
                   encodeURIComponent(uploadedFile.name) +
                   "?alt=media&token=" +
                   uuid,
+                rawLocation: {
+                  lat: fields.rawLocationLat,
+                  lng: fields.rawLocationLng,
+                },
               })
               .then(function () {
                 webpush.setVapidDetails(

@@ -2,7 +2,7 @@ importScripts("/src/js/idb.js");
 importScripts("/src/js/db_utility.js");
 
 const TRIM_ITEMS_NUMBER = 3;
-const CACHE_STATIC = "static-v27";
+const CACHE_STATIC = "static-v30";
 const CACHE_DYNAMIC = "dynamic-v2";
 const SYNC_EVENT_NEW_POST = "sync-new-post";
 const STATIC_FILES = [
@@ -139,6 +139,8 @@ self.addEventListener("sync", function (event) {
           postData.append("title", datum.title);
           postData.append("location", datum.location);
           postData.append("file", datum.picture, datum.id + ".png");
+          postData.append("rawLocationLat", datum.rawLocation.lat);
+          postData.append("rawLocationLng", datum.rawLocation.lng);
 
           fetch(
             "https://us-central1-pwa-course-a001f.cloudfunctions.net/storePostData",
