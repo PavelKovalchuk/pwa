@@ -77,16 +77,12 @@ workboxSW.router.registerRoute(
 
 workboxSW.precache([
   {
-    "url": "404.html",
-    "revision": "0a27a4163254fc8fce870c8cc3a3f94f"
-  },
-  {
     "url": "favicon.ico",
     "revision": "2cab47d9e04d664d93c8d91aec59e812"
   },
   {
     "url": "index.html",
-    "revision": "f7f2274d22f04fd1b27d172560a1aa51"
+    "revision": "e609c51f199d0b51dc54295b92560ea3"
   },
   {
     "url": "manifest.json",
@@ -95,10 +91,6 @@ workboxSW.precache([
   {
     "url": "offline.html",
     "revision": "f41ceda4c8c27200f6f2f72f243df1a4"
-  },
-  {
-    "url": "service-worker.js",
-    "revision": "487dff15087397afb9e0200bcced3dff"
   },
   {
     "url": "src/css/app.css",
@@ -111,46 +103,6 @@ workboxSW.precache([
   {
     "url": "src/css/help.css",
     "revision": "1c6d81b27c9d423bece9869b07a7bd73"
-  },
-  {
-    "url": "src/js/app.js",
-    "revision": "2e71f9b419a76d9fb5c5af65e0d78529"
-  },
-  {
-    "url": "src/js/db_utility.js",
-    "revision": "a3621c812aef9cafdab21c5e86c8f10f"
-  },
-  {
-    "url": "src/js/feed.js",
-    "revision": "a701d6be371e34711b6a6029e2e0a87a"
-  },
-  {
-    "url": "src/js/fetch.js",
-    "revision": "6b82fbb55ae19be4935964ae8c338e92"
-  },
-  {
-    "url": "src/js/idb.js",
-    "revision": "017ced36d82bea1e08b08393361e354d"
-  },
-  {
-    "url": "src/js/material.min.js",
-    "revision": "713af0c6ce93dbbce2f00bf0a98d0541"
-  },
-  {
-    "url": "src/js/promise.js",
-    "revision": "10c2238dcd105eb23f703ee53067417f"
-  },
-  {
-    "url": "sw-base.js",
-    "revision": "a3d493dcc19aee44560065cda7d81d21"
-  },
-  {
-    "url": "sw.js",
-    "revision": "bc6771fd24d0c20dadafd828a92a67ff"
-  },
-  {
-    "url": "workbox-sw.prod.v2.1.3.js",
-    "revision": "a9890beda9e5f17e4c68f42324217941"
   },
   {
     "url": "src/images/main-image-lg.jpg",
@@ -167,6 +119,34 @@ workboxSW.precache([
   {
     "url": "src/images/sf-boat.jpg",
     "revision": "0f282d64b0fb306daf12050e812d6a19"
+  },
+  {
+    "url": "src/js/app.min.js",
+    "revision": "50adfad433cfd08f275262fbcf472dc3"
+  },
+  {
+    "url": "src/js/db_utility.min.js",
+    "revision": "a32001fe3f8d5c07c3db90535a441257"
+  },
+  {
+    "url": "src/js/feed.min.js",
+    "revision": "cafbd973efe0ca359bf67ece63ef04ef"
+  },
+  {
+    "url": "src/js/fetch.min.js",
+    "revision": "32590119a06bf9ade8026dd12baa695e"
+  },
+  {
+    "url": "src/js/idb.min.js",
+    "revision": "ea82c8cec7e6574ed535bee7878216e0"
+  },
+  {
+    "url": "src/js/material.min.js",
+    "revision": "713af0c6ce93dbbce2f00bf0a98d0541"
+  },
+  {
+    "url": "src/js/promise.min.js",
+    "revision": "7be19d2e97926f498f2668e055e26b22"
   }
 ]);
 
