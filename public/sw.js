@@ -2,7 +2,7 @@ importScripts("/src/js/idb.js");
 importScripts("/src/js/db_utility.js");
 
 const TRIM_ITEMS_NUMBER = 3;
-const CACHE_STATIC = "static-v21";
+const CACHE_STATIC = "static-v23";
 const CACHE_DYNAMIC = "dynamic";
 const SYNC_EVENT_NEW_POST = "sync-new-post";
 const STATIC_FILES = [

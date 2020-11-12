@@ -14,6 +14,7 @@ const canvasElement = document.querySelector("#canvas");
 const captureButton = document.querySelector("#capture-btn");
 const imagePicker = document.querySelector("#image-picker");
 const imagePickerArea = document.querySelector("#pick-image");
+let picture;
 
 function initializeMedia() {
   if (!("mediaDevices" in navigator)) {
@@ -35,7 +36,38 @@ function initializeMedia() {
       });
     };
   }
+
+  navigator.mediaDevices
+    .getUserMedia({ video: true })
+    .then(function (stream) {
+      videoPlayer.srcObject = stream;
+      videoPlayer.style.display = "block";
+    })
+    .catch(function (err) {
+      imagePickerArea.style.display = "block";
+    });
 }
+
+captureButton.addEventListener("click", (event) => {
+  canvasElement.style.display = "block";
+  videoPlayer.style.display = "none";
+  captureButton.style.display = "none";
+  const context = canvasElement.getContext("2d");
+
+  context.drawImage(
+    videoPlayer,
+    0,
+    0,
+    canvas.width,
+    videoPlayer.videoHeight / (videoPlayer.videoWidth / canvas.width)
+  );
+
+  videoPlayer.srcObject.getVideoTracks().forEach((track) => {
+    track.stop();
+  });
+
+  picture = dataURItoBlob(canvasElement.toDataURL());
+});
 
 function updateUI(data) {
   clearCards();
@@ -77,6 +109,10 @@ function openCreatePostModal() {
 
 function closeCreatePostModal() {
   createPostArea.style.transform = "translateY(100vh)";
+  imagePickerArea.style.display = "none";
+  videoPlayer.style.display = "none";
+  canvasElement.style.display = "none";
+  // createPostArea.style.display = 'none';
 }
 
 shareImageButton.addEventListener("click", openCreatePostModal);
