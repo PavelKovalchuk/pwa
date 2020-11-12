@@ -2,14 +2,15 @@ importScripts("/src/js/idb.js");
 importScripts("/src/js/db_utility.js");
 
 const TRIM_ITEMS_NUMBER = 3;
-const CACHE_STATIC = "static-v23";
-const CACHE_DYNAMIC = "dynamic";
+const CACHE_STATIC = "static-v26";
+const CACHE_DYNAMIC = "dynamic-v2";
 const SYNC_EVENT_NEW_POST = "sync-new-post";
 const STATIC_FILES = [
   "/",
   "/index.html",
   "/offline.html",
   "/src/js/app.js",
+  "/src/js/db_utility.js",
   "/src/js/feed.js",
   "/src/js/idb.js",
   "/src/js/promise.js",
@@ -132,21 +133,18 @@ self.addEventListener("sync", function (event) {
     event.waitUntil(
       readAllData(DBU_STORE_NAME_SYNC_POSTS).then((data) => {
         for (let datum of data) {
+          // Create post data in Form format
+          const postData = new FormData();
+          postData.append("id", datum.id);
+          postData.append("title", datum.title);
+          postData.append("location", datum.location);
+          postData.append("file", datum.picture, datum.id + ".png");
+
           fetch(
             "https://us-central1-pwa-course-a001f.cloudfunctions.net/storePostData",
             {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-              },
-              body: JSON.stringify({
-                id: datum.id,
-                title: datum.title,
-                location: datum.location,
-                image:
-                  "https://firebasestorage.googleapis.com/v0/b/pwa-course-a001f.appspot.com/o/kharkiv.jpg?alt=media&token=80ff87f9-b921-4046-b943-64ca925367c9",
-              }),
+              body: postData,
             }
           )
             .then((res) => {

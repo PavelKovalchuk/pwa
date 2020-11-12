@@ -144,7 +144,7 @@ function createCard(data) {
   cardTitle.style.backgroundImage = "url(" + data.image + ")";
   cardTitle.style.backgroundSize = "cover";
   cardTitle.style.color = "white";
-  cardTitle.style.height = "180px";
+  cardTitle.style.height = "240px";
   cardWrapper.appendChild(cardTitle);
   var cardTitleTextElement = document.createElement("h2");
   cardTitleTextElement.className = "mdl-card__title-text";
@@ -219,21 +219,19 @@ if ("indexedDB" in window) {
 } */
 
 function sendData() {
+  const id = new Date().toISOString();
+  // Create post data in Form format
+  const postData = new FormData();
+  postData.append("id", id);
+  postData.append("title", titleInput.value);
+  postData.append("location", locationInput.value);
+  postData.append("file", picture, id + ".png");
+
   fetch(
     "https://us-central1-pwa-course-a001f.cloudfunctions.net/storePostData",
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        id: new Date().toISOString(),
-        title: titleInput.value,
-        location: locationInput.value,
-        image:
-          "https://firebasestorage.googleapis.com/v0/b/pwa-course-a001f.appspot.com/o/kharkiv.jpg?alt=media&token=80ff87f9-b921-4046-b943-64ca925367c9",
-      }),
+      body: postData,
     }
   ).then(function (res) {
     console.log("Sent data", res);
@@ -257,6 +255,7 @@ form.addEventListener("submit", function (event) {
         id: new Date().toISOString(),
         title: titleInput.value,
         location: locationInput.value,
+        picture: picture,
       };
       writeData(DBU_STORE_NAME_SYNC_POSTS, post)
         .then(() => {
