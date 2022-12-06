@@ -20,7 +20,7 @@
   "author": "Pavel Kovalchuk",
   "license": "ISC",
   "devDependencies": {
-    "http-server": "^0.9.0",
+    "http-server": "^14.1.1",
     "uglify-es": "^3.3.9",
     "workbox-cli": "^2.1.3"
   }
